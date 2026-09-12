@@ -7,6 +7,7 @@ const LINKS = [
   { label: 'Experiences', href: '#experiences' },
   { label: 'How to Join', href: '#tiers' },
   { label: 'Numbers', href: '#numbers' },
+  { label: 'Partners', href: '#partners' },
   { label: 'Contact', href: '#contact' },
 ];
 
@@ -30,20 +31,17 @@ export default function Nav() {
   return (
     <>
       <header
-        className={`fixed inset-x-0 top-0 z-[65] transition-[transform,background-color,border-color] duration-500 ${
+        className={`fixed inset-x-0 top-0 z-[65] transition-[transform,background-color,border-color] duration-500 ease-[cubic-bezier(.16,1,.3,1)] ${
           hidden ? '-translate-y-full' : 'translate-y-0'
         } ${solid ? 'border-b border-bone/10 bg-carbon/85 backdrop-blur-xl' : 'border-b border-transparent'}`}
       >
         <div className="mx-auto flex max-w-[1600px] items-center justify-between px-5 py-3.5 md:px-10">
-          <a href="#top" data-cursor="TOP" className="group flex items-center gap-3">
+          <a href="#top" data-cursor="TOP" className="group flex items-center">
             <img
-              src="/media/dh/dh-monogram.jpg"
-              alt="Drivaholics monogram"
-              className="h-9 w-9 object-cover transition-transform duration-500 group-hover:rotate-[135deg]"
+              src="/media/dh/Drivaholics.png"
+              alt="Drivaholics"
+              className="h-10 w-10 object-contain transition-transform duration-500 group-hover:rotate-[135deg]"
             />
-            <span className="stencil text-lg font-extrabold tracking-tight">
-              DRIVA<span className="text-white">HOLICS</span>
-            </span>
           </a>
 
           <nav className="hidden items-center gap-8 lg:flex">

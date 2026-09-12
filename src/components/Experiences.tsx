@@ -36,7 +36,7 @@ const ITEMS: Item[] = [
   {
     n: '03',
     title: 'Porsche Drift Experience',
-    kicker: 'Teaching oversteer at BIC',
+    kicker: 'Teaching Weight Shifting 101',
     body: 'An event dedicated to teaching Porsche drivers the art of controlled oversteer — held at Bahrain International Circuit.',
     meta: ['BIC BAHRAIN', 'PORSCHE ONLY'],
     img: '/media/dh/dh-porsche.jpg',

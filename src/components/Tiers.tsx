@@ -65,9 +65,9 @@ export default function Tiers() {
               and the next one opens soon.
             </p>
 
-            <div className="mt-10 grid gap-px border border-bone/12 bg-bone/12 sm:grid-cols-3">
+            <div className="mt-10 grid gap-px border border-bone/12 bg-bone/12 lg:grid-cols-3">
               {[
-                { n: '01', t: 'One big drift event', d: 'Yearly flagship + smaller sessions' },
+                { n: '01', t: 'One big drift event', d: 'Sideways fun & skills' },
                 { n: '02', t: 'Gymkhana', d: 'Head-to-head mirror track' },
                 { n: '03', t: 'Special events', d: 'Invite-only experiences' },
               ].map((e, i) => (

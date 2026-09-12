@@ -11,8 +11,11 @@ export default function RegisterForm({ event }: { event: CurrentEvent }) {
     phone: '',
     carMake: '',
     carModel: '',
+    format: '' as '' | 'drift' | 'gymkhana' | 'both',
+    groupAffiliation: '',
     wantsTires: false,
     tireSize: '',
+    tireSizeRear: '',
     tireQuantity: 4,
   });
   const [state, setState] = useState<'idle' | 'loading' | 'ok' | 'err'>('idle');
@@ -25,6 +28,13 @@ export default function RegisterForm({ event }: { event: CurrentEvent }) {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    if (!form.format) {
+      setState('err');
+      setMsg('Please select an event format.');
+      return;
+    }
+
     setState('loading');
     setMsg('');
 
@@ -40,7 +50,7 @@ export default function RegisterForm({ event }: { event: CurrentEvent }) {
       if (res.ok) {
         setState('ok');
         setMsg('Registration received! We will send you confirmation and payment details via WhatsApp.');
-        setForm({ name: '', email: '', phone: '', carMake: '', carModel: '', wantsTires: false, tireSize: '', tireQuantity: 4 });
+        setForm({ name: '', email: '', phone: '', carMake: '', carModel: '', format: '', groupAffiliation: '', wantsTires: false, tireSize: '', tireSizeRear: '', tireQuantity: 4 });
       } else if (res.status === 409) {
         setState('ok');
         setMsg('You are already registered for this event. Check WhatsApp for details.');
@@ -63,7 +73,7 @@ export default function RegisterForm({ event }: { event: CurrentEvent }) {
             <div className="bg-white p-8">
               <div className="flex items-center justify-between">
                 <span className="stencil text-3xl font-bold text-carbon">{event.title}</span>
-                <Asterisk className="h-8 w-8 text-carbon" />
+                <Asterisk className="h-8 w-8" invert />
               </div>
             </div>
 
@@ -79,7 +89,22 @@ export default function RegisterForm({ event }: { event: CurrentEvent }) {
                 </div>
                 <div>
                   <p className="tag text-ash">PRICE</p>
-                  <p className="stencil mt-2 text-2xl font-bold">{event.price}</p>
+                  <div className="mt-2 space-y-1">
+                    <p
+                      className={`stencil text-xl font-bold ${
+                        form.format === 'gymkhana' ? 'text-bone/30' : 'text-white'
+                      }`}
+                    >
+                      Drift — {event.priceDrift}
+                    </p>
+                    <p
+                      className={`stencil text-xl font-bold ${
+                        form.format === 'drift' ? 'text-bone/30' : 'text-white'
+                      }`}
+                    >
+                      Gymkhana — {event.priceGymkhana}
+                    </p>
+                  </div>
                 </div>
                 <div>
                   <p className="tag text-ash">AVAILABLE SPOTS</p>
@@ -156,10 +181,30 @@ export default function RegisterForm({ event }: { event: CurrentEvent }) {
               />
             </div>
 
+            <div>
+              <label className="tag text-ash">04 — EVENT FORMAT</label>
+              <div className="mt-3 grid grid-cols-3 gap-3">
+                {(['drift', 'gymkhana', 'both'] as const).map((f) => (
+                  <button
+                    key={f}
+                    type="button"
+                    onClick={() => setForm({ ...form, format: f })}
+                    className={`border px-4 py-3 tag font-bold transition-colors ${
+                      form.format === f
+                        ? 'border-white bg-white text-carbon'
+                        : 'border-bone/20 text-bone/60 hover:border-bone/40'
+                    }`}
+                  >
+                    {f === 'both' ? 'Both' : f.charAt(0).toUpperCase() + f.slice(1)}
+                  </button>
+                ))}
+              </div>
+            </div>
+
             <div className="grid gap-6 sm:grid-cols-2">
               <div>
                 <label className="tag text-ash" htmlFor="reg-make">
-                  04 — CAR MAKE
+                  05 — CAR MAKE
                 </label>
                 <input
                   id="reg-make"
@@ -172,7 +217,7 @@ export default function RegisterForm({ event }: { event: CurrentEvent }) {
               </div>
               <div>
                 <label className="tag text-ash" htmlFor="reg-model">
-                  05 — CAR MODEL
+                  06 — CAR MODEL
                 </label>
                 <input
                   id="reg-model"
@@ -185,6 +230,23 @@ export default function RegisterForm({ event }: { event: CurrentEvent }) {
               </div>
             </div>
 
+            <div>
+              <label className="tag text-ash" htmlFor="reg-group">
+                07 — GROUP / CLUB AFFILIATION (OPTIONAL)
+              </label>
+              <input
+                id="reg-group"
+                value={form.groupAffiliation}
+                onChange={(e) => setForm({ ...form, groupAffiliation: e.target.value })}
+                placeholder="e.g. a car club, team, or community you ride with"
+                className="field field--dark"
+              />
+              <p className="mt-2 text-xs leading-relaxed text-bone/40">
+                If we&apos;re partnered with your group, this is how you get the discount — leave blank if not
+                applicable.
+              </p>
+            </div>
+
             <div className="border-t border-bone/12 pt-8">
               <label className="flex items-center gap-3 tag text-white">
                 <input
@@ -193,14 +255,14 @@ export default function RegisterForm({ event }: { event: CurrentEvent }) {
                   onChange={(e) => setForm({ ...form, wantsTires: e.target.checked })}
                   className="h-4 w-4"
                 />
-                06 — ADD DRIFT TIRES (OPTIONAL)
+                08 — ADD DRIFT TIRES (OPTIONAL)
               </label>
 
               {form.wantsTires && (
                 <div className="mt-6 space-y-6 border-l-2 border-acid/40 pl-5">
                   <div>
                     <label className="tag text-ash" htmlFor="reg-tire-size">
-                      TIRE SIZE
+                      TIRE SIZE (FRONT)
                     </label>
                     <input
                       id="reg-tire-size"
@@ -212,24 +274,50 @@ export default function RegisterForm({ event }: { event: CurrentEvent }) {
                     />
                   </div>
 
-                  <div>
-                    <div className="flex items-center justify-between">
-                      <label className="tag text-ash" htmlFor="reg-tire-qty">
-                        QUANTITY
+                  <div className="grid gap-6 sm:grid-cols-2">
+                    <div>
+                      <label className="tag text-ash" htmlFor="reg-tire-size-rear">
+                        TIRE SIZE (REAR) — IF STAGGERED
                       </label>
-                      <span className="stencil text-xl font-bold text-white">{form.tireQuantity}</span>
+                      <input
+                        id="reg-tire-size-rear"
+                        value={form.tireSizeRear}
+                        onChange={(e) => setForm({ ...form, tireSizeRear: e.target.value })}
+                        placeholder="Optional, e.g. 235/40R18"
+                        className="field field--dark"
+                      />
                     </div>
-                    <input
-                      id="reg-tire-qty"
-                      type="range"
-                      min={1}
-                      max={8}
-                      step={1}
-                      value={form.tireQuantity}
-                      onChange={(e) => setForm({ ...form, tireQuantity: Number(e.target.value) })}
-                      className="mt-3 w-full accent-acid"
-                    />
+
+                    <div>
+                      <div className="flex items-center justify-between">
+                        <label className="tag text-ash" htmlFor="reg-tire-qty">
+                          QUANTITY
+                        </label>
+                        <span className="stencil text-xl font-bold text-white">{form.tireQuantity}</span>
+                      </div>
+                      <input
+                        id="reg-tire-qty"
+                        type="range"
+                        min={1}
+                        max={8}
+                        step={1}
+                        value={form.tireQuantity}
+                        onChange={(e) => setForm({ ...form, tireQuantity: Number(e.target.value) })}
+                        className="mt-3 w-full accent-acid"
+                      />
+                    </div>
                   </div>
+
+                  <p className="text-xs leading-relaxed text-bone/50">
+                    Expected price: ~300 SAR per tire*
+                    <br />
+                    Tire change team available in the event area.
+                  </p>
+                  <p className="text-xs leading-relaxed text-bone/40">
+                    *Tire prices are separate from your event registration fee. Payment for tires is made on-site
+                    during the tire change — ordering an extra size costs nothing if you don&apos;t end up needing
+                    it.
+                  </p>
                 </div>
               )}
             </div>

@@ -66,7 +66,7 @@ export default function Cursor() {
         ref={ring}
         className={`pointer-events-none fixed left-0 top-0 z-[69] flex items-center justify-center rounded-full border transition-[width,height,background-color,border-color] duration-300 ${
           active
-            ? 'h-20 w-20 border-transparent bg-acid text-carbon'
+            ? 'h-20 w-20 border-transparent bg-acid/70 text-carbon'
             : 'h-9 w-9 border-bone/40 bg-transparent text-acid'
         }`}
       >

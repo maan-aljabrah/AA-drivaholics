@@ -4,10 +4,14 @@ import { registrationsTable } from '@/db/schema';
 
 export async function POST(request: NextRequest) {
   try {
-    const { name, email, phone, carMake, carModel, eventId, wantsTires, tireSize, tireQuantity } = await request.json();
+    const { name, email, phone, carMake, carModel, eventId, format, groupAffiliation, wantsTires, tireSize, tireSizeRear, tireQuantity } = await request.json();
 
     if (!name || !email || !phone || !carMake || !carModel || !eventId) {
       return NextResponse.json({ error: 'All fields are required' }, { status: 400 });
+    }
+
+    if (!['drift', 'gymkhana', 'both'].includes(format)) {
+      return NextResponse.json({ error: 'Please select an event format' }, { status: 400 });
     }
 
     if (wantsTires && !tireSize) {
@@ -25,8 +29,11 @@ export async function POST(request: NextRequest) {
         carMake: String(carMake).trim(),
         carModel: String(carModel).trim(),
         eventId: String(eventId).trim(),
+        format: String(format),
+        groupAffiliation: groupAffiliation ? String(groupAffiliation).trim() : null,
         wantsTires: Boolean(wantsTires),
         tireSize: wantsTires ? String(tireSize).trim() : null,
+        tireSizeRear: wantsTires && tireSizeRear ? String(tireSizeRear).trim() : null,
         tireQuantity: wantsTires ? Number(tireQuantity) || 4 : null,
       })
       .onConflictDoNothing()

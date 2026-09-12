@@ -168,8 +168,12 @@ export default function Hero() {
             <span className="text-white">real car culture</span> — briefed, marshalled, and run properly.
           </p>
           <div className="pointer-events-auto flex flex-wrap items-center gap-3">
-            <a href="/register" data-cursor="REGISTER" className="pill border border-white px-7 py-4 tag font-bold text-white">
-              Become a Drivaholic
+            <a
+              href="/register"
+              data-cursor="REGISTER"
+              className="pill border border-white bg-white px-10 py-5 stencil text-base font-extrabold uppercase tracking-wide text-carbon transition-colors hover:bg-transparent hover:text-white sm:text-lg"
+            >
+              Register Now →
             </a>
             <a href="#experiences" data-cursor="SEE" className="swipe py-4 tag text-bone/60 transition-colors hover:text-white">
               What we run ↓

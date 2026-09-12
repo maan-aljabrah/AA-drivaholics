@@ -3,6 +3,7 @@ import { signupsTable, registrationsTable } from '@/db/schema';
 import { desc } from 'drizzle-orm';
 import { Ticker } from '@/components/ui';
 import AdminLogout from '@/components/AdminLogout';
+import DeleteButton from '@/components/DeleteButton';
 
 export const dynamic = 'force-dynamic';
 
@@ -41,12 +42,13 @@ export default async function AdminPage() {
                 <th className="px-5 py-4">Email</th>
                 <th className="px-5 py-4">WhatsApp</th>
                 <th className="px-5 py-4">Joined</th>
+                <th className="px-5 py-4"></th>
               </tr>
             </thead>
             <tbody className="divide-y divide-bone/10">
               {signups.length === 0 ? (
                 <tr>
-                  <td colSpan={5} className="px-5 py-20 text-center">
+                  <td colSpan={6} className="px-5 py-20 text-center">
                     <p className="stencil text-2xl font-bold text-ash">Nobody in the paddock yet</p>
                     <a href="/#join" className="swipe mt-3 inline-block tag text-white">
                       Share the join link →
@@ -69,6 +71,9 @@ export default async function AdminPage() {
                         hour: '2-digit',
                         minute: '2-digit',
                       })}
+                    </td>
+                    <td className="px-5 py-4 text-right">
+                      <DeleteButton endpoint={`/api/admin/signups/${s.id}`} label={s.name} />
                     </td>
                   </tr>
                 ))
@@ -96,14 +101,17 @@ export default async function AdminPage() {
                 <th className="px-5 py-4">Email</th>
                 <th className="px-5 py-4">WhatsApp</th>
                 <th className="px-5 py-4">Car</th>
+                <th className="px-5 py-4">Format</th>
+                <th className="px-5 py-4">Group</th>
                 <th className="px-5 py-4">Tires</th>
                 <th className="px-5 py-4">Joined</th>
+                <th className="px-5 py-4"></th>
               </tr>
             </thead>
             <tbody className="divide-y divide-bone/10">
               {registrations.length === 0 ? (
                 <tr>
-                  <td colSpan={7} className="px-5 py-20 text-center">
+                  <td colSpan={10} className="px-5 py-20 text-center">
                     <p className="stencil text-2xl font-bold text-ash">No registrations yet</p>
                   </td>
                 </tr>
@@ -119,8 +127,12 @@ export default async function AdminPage() {
                     <td className="px-5 py-4 text-sm text-bone/70">
                       {r.carMake} {r.carModel}
                     </td>
+                    <td className="px-5 py-4 text-sm text-bone/70 capitalize">{r.format || '—'}</td>
+                    <td className="px-5 py-4 text-sm text-bone/70">{r.groupAffiliation || '—'}</td>
                     <td className="px-5 py-4 text-sm text-acid">
-                      {r.wantsTires ? `${r.tireSize} × ${r.tireQuantity}` : '—'}
+                      {r.wantsTires
+                        ? `${r.tireSize}${r.tireSizeRear ? ` (F) / ${r.tireSizeRear} (R)` : ''} × ${r.tireQuantity}`
+                        : '—'}
                     </td>
                     <td className="px-5 py-4 font-mono text-xs text-ash">
                       {new Date(r.createdAt).toLocaleString('en-GB', {
@@ -129,6 +141,9 @@ export default async function AdminPage() {
                         hour: '2-digit',
                         minute: '2-digit',
                       })}
+                    </td>
+                    <td className="px-5 py-4 text-right">
+                      <DeleteButton endpoint={`/api/admin/registrations/${r.id}`} label={r.name} />
                     </td>
                   </tr>
                 ))

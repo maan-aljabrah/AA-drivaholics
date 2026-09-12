@@ -3,15 +3,16 @@
 import { useInView } from '@/lib/hooks';
 import type { ReactNode } from 'react';
 
-/* ---------- spinning star ---------- */
-export function Asterisk({ className = '' }: { className?: string }) {
+/* ---------- spinning logo mark ---------- */
+export function Asterisk({ className = '', invert = false }: { className?: string; invert?: boolean }) {
   return (
-    <svg viewBox="0 0 100 100" className={`anim-spin-slow ${className}`} aria-hidden fill="currentColor">
-      {[0, 45, 90, 135, 180, 225, 270, 315].map((deg) => (
-        <path key={deg} d="M50 50 L55.5 8 L44.5 8 Z" transform={`rotate(${deg} 50 50)`} />
-      ))}
-      <circle cx="50" cy="50" r="7.5" />
-    </svg>
+    <img
+      src="/media/dh/Drivaholics.png"
+      alt=""
+      aria-hidden
+      className={`anim-spin-slow object-contain ${className}`}
+      style={invert ? { filter: 'invert(1)' } : undefined}
+    />
   );
 }
 

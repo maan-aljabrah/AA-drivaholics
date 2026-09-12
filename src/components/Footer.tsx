@@ -68,6 +68,7 @@ export default function Footer() {
                 ['Experiences', '#experiences'],
                 ['How to Join', '#tiers'],
                 ['Numbers', '#numbers'],
+                ['Partners', '#partners'],
                 ['Privacy Policy', '/privacy'],
                 ['Terms of Service', '/terms'],
               ].map(([l, h]) => (

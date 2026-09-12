@@ -7,7 +7,7 @@ const PANELS = [
   {
     key: 'on',
     label: 'ON TRACK',
-    note: 'Drift · Autocross · Gymkhana',
+    note: 'Pedal to the metal',
     img: '/media/dh/dh-branded-m4.jpg',
     accent: '#ffffff',
     href: '#experiences',
@@ -15,7 +15,7 @@ const PANELS = [
   {
     key: 'off',
     label: 'OFF TRACK',
-    note: 'Meets, shows, long roads',
+    note: 'Admiring mechanical art',
     img: '/media/dh/dh-off-track.jpg',
     accent: '#ffffff',
     href: '#gallery',

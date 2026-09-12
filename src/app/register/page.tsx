@@ -13,15 +13,12 @@ export default async function RegisterPage() {
       {/* Header */}
       <header className="relative z-10 border-b border-bone/10 bg-black/85 backdrop-blur-xl">
         <div className="mx-auto flex max-w-[1600px] items-center justify-between px-5 py-4 md:px-10">
-          <a href="/" className="group flex items-center gap-3">
+          <a href="/" className="group flex items-center">
             <img
-              src="/media/dh/dh-monogram.jpg"
+              src="/media/dh/Drivaholics.png"
               alt="Drivaholics"
-              className="h-9 w-9 object-cover transition-transform duration-500 group-hover:rotate-[135deg]"
+              className="h-10 w-10 object-contain transition-transform duration-500 group-hover:rotate-[135deg]"
             />
-            <span className="stencil text-lg font-extrabold tracking-tight">
-              DRIVA<span className="text-white">HOLICS</span>
-            </span>
           </a>
           <a href="/" className="swipe tag text-bone/70 hover:text-white">
             ← Back to site

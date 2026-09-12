@@ -3,13 +3,23 @@
 import { useState } from 'react';
 import type { CurrentEvent } from '@/db/queries';
 
+function toLocalInputValue(d: Date | string | null | undefined) {
+  if (!d) return '';
+  const date = new Date(d);
+  if (Number.isNaN(date.getTime())) return '';
+  const pad = (n: number) => String(n).padStart(2, '0');
+  return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}T${pad(date.getHours())}:${pad(date.getMinutes())}`;
+}
+
 export default function AdminEventForm({ event }: { event: CurrentEvent | null }) {
   const [form, setForm] = useState({
     isOpen: event?.isOpen ?? false,
     title: event?.title ?? '',
     eventDate: event?.eventDate ?? '',
+    countdownAt: toLocalInputValue(event?.countdownAt),
     location: event?.location ?? '',
-    price: event?.price ?? 'TBA',
+    priceDrift: event?.priceDrift ?? 'TBA',
+    priceGymkhana: event?.priceGymkhana ?? 'TBA',
     spots: event?.spots ?? 0,
     description: event?.description ?? '',
     formats: event?.formats ?? '',
@@ -23,7 +33,10 @@ export default function AdminEventForm({ event }: { event: CurrentEvent | null }
       const res = await fetch('/api/admin/event', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(form),
+        body: JSON.stringify({
+          ...form,
+          countdownAt: form.countdownAt ? new Date(form.countdownAt).toISOString() : null,
+        }),
       });
       setState(res.ok ? 'ok' : 'err');
     } catch {
@@ -58,13 +71,23 @@ export default function AdminEventForm({ event }: { event: CurrentEvent | null }
           />
         </div>
         <div>
-          <label className="tag text-ash">Date</label>
+          <label className="tag text-ash">Date (shown on the page)</label>
           <input
             value={form.eventDate}
             onChange={(e) => setForm({ ...form, eventDate: e.target.value })}
             placeholder="January 1, 2027"
             className="field field--dark"
           />
+        </div>
+        <div>
+          <label className="tag text-ash">Countdown target (date + time)</label>
+          <input
+            type="datetime-local"
+            value={form.countdownAt}
+            onChange={(e) => setForm({ ...form, countdownAt: e.target.value })}
+            className="field field--dark"
+          />
+          <p className="mt-1 text-xs text-bone/40">Leave blank to hide the homepage countdown.</p>
         </div>
         <div>
           <label className="tag text-ash">Location</label>
@@ -76,11 +99,20 @@ export default function AdminEventForm({ event }: { event: CurrentEvent | null }
           />
         </div>
         <div>
-          <label className="tag text-ash">Price</label>
+          <label className="tag text-ash">Price — Drift</label>
           <input
-            value={form.price}
-            onChange={(e) => setForm({ ...form, price: e.target.value })}
+            value={form.priceDrift}
+            onChange={(e) => setForm({ ...form, priceDrift: e.target.value })}
             placeholder="TBA, or e.g. 350 SAR"
+            className="field field--dark"
+          />
+        </div>
+        <div>
+          <label className="tag text-ash">Price — Gymkhana</label>
+          <input
+            value={form.priceGymkhana}
+            onChange={(e) => setForm({ ...form, priceGymkhana: e.target.value })}
+            placeholder="TBA, or e.g. 250 SAR"
             className="field field--dark"
           />
         </div>
