@@ -1,10 +1,15 @@
 import { getCurrentEvent } from '@/db/queries';
 import AdminEventForm from '@/components/AdminEventForm';
+import DiscountCodesManager from '@/components/DiscountCodesManager';
+import { db } from '@/db';
+import { discountCodesTable } from '@/db/schema';
+import { desc } from 'drizzle-orm';
 
 export const dynamic = 'force-dynamic';
 
 export default async function AdminEventPage() {
   const event = await getCurrentEvent();
+  const codes = await db.select().from(discountCodesTable).orderBy(desc(discountCodesTable.createdAt));
 
   return (
     <main className="min-h-screen bg-carbon text-bone">
@@ -19,6 +24,8 @@ export default async function AdminEventPage() {
         </p>
 
         <AdminEventForm event={event} />
+
+        <DiscountCodesManager codes={codes} />
 
         <a href="/admin" className="pill mt-10 inline-flex border border-white px-6 py-4 tag font-bold text-white">
           ← Back to signups

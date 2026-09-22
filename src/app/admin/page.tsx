@@ -103,6 +103,8 @@ export default async function AdminPage() {
                 <th className="px-5 py-4">Car</th>
                 <th className="px-5 py-4">Format</th>
                 <th className="px-5 py-4">Group</th>
+                <th className="px-5 py-4">Code</th>
+                <th className="px-5 py-4">Amount</th>
                 <th className="px-5 py-4">Tires</th>
                 <th className="px-5 py-4">Joined</th>
                 <th className="px-5 py-4"></th>
@@ -111,7 +113,7 @@ export default async function AdminPage() {
             <tbody className="divide-y divide-bone/10">
               {registrations.length === 0 ? (
                 <tr>
-                  <td colSpan={10} className="px-5 py-20 text-center">
+                  <td colSpan={12} className="px-5 py-20 text-center">
                     <p className="stencil text-2xl font-bold text-ash">No registrations yet</p>
                   </td>
                 </tr>
@@ -129,9 +131,11 @@ export default async function AdminPage() {
                     </td>
                     <td className="px-5 py-4 text-sm text-bone/70 capitalize">{r.format || '—'}</td>
                     <td className="px-5 py-4 text-sm text-bone/70">{r.groupAffiliation || '—'}</td>
+                    <td className="stencil px-5 py-4 text-sm font-bold text-white">{r.discountCode || '—'}</td>
+                    <td className="px-5 py-4 text-sm text-bone/70">{r.amountDue != null ? `${r.amountDue} SAR` : '—'}</td>
                     <td className="px-5 py-4 text-sm text-acid">
                       {r.wantsTires
-                        ? `${r.tireSize}${r.tireSizeRear ? ` (F) / ${r.tireSizeRear} (R)` : ''} × ${r.tireQuantity}`
+                        ? `${r.tireSizeRear} (R)${r.tireSizeFront ? ` / ${r.tireSizeFront} (F)` : ''} × ${r.tireQuantity}`
                         : '—'}
                     </td>
                     <td className="px-5 py-4 font-mono text-xs text-ash">

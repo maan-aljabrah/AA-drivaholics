@@ -3,8 +3,11 @@
 import { useState } from 'react';
 import { Asterisk } from '@/components/ui';
 import type { CurrentEvent } from '@/db/queries';
+import { amountForFormat } from '@/lib/pricing';
 
-export default function RegisterForm({ event }: { event: CurrentEvent }) {
+type AppliedCode = { code: string; priceDrift: number | null; priceGymkhana: number | null };
+
+export default function RegisterForm({ event, isEarly }: { event: CurrentEvent; isEarly: boolean }) {
   const [form, setForm] = useState({
     name: '',
     email: '',
@@ -13,18 +16,57 @@ export default function RegisterForm({ event }: { event: CurrentEvent }) {
     carModel: '',
     format: '' as '' | 'drift' | 'gymkhana' | 'both',
     groupAffiliation: '',
+    discountCode: '',
     wantsTires: false,
-    tireSize: '',
     tireSizeRear: '',
+    tireSizeFront: '',
     tireQuantity: 4,
   });
   const [state, setState] = useState<'idle' | 'loading' | 'ok' | 'err'>('idle');
   const [msg, setMsg] = useState('');
+  const [appliedCode, setAppliedCode] = useState<AppliedCode | null>(null);
+  const [codeStatus, setCodeStatus] = useState<'idle' | 'checking' | 'valid' | 'invalid'>('idle');
 
   const formats = event.formats
     .split(',')
     .map((f) => f.trim())
     .filter(Boolean);
+
+  const baseDrift = isEarly ? event.priceDriftEarly : event.priceDriftLate;
+  const baseGymkhana = isEarly ? event.priceGymkhanaEarly : event.priceGymkhanaLate;
+  const driftPrice = appliedCode ? appliedCode.priceDrift : baseDrift;
+  const gymkhanaPrice = appliedCode ? appliedCode.priceGymkhana : baseGymkhana;
+
+  const priceLabel = (v: number | null) => (v == null ? 'TBA' : `${v} SAR`);
+
+  const cutoffLabel = event.priceCutoffAt
+    ? new Date(event.priceCutoffAt).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' })
+    : null;
+
+  const checkCode = async (raw: string): Promise<AppliedCode | null> => {
+    const clean = raw.trim().toUpperCase();
+    if (!clean) return null;
+    const res = await fetch('/api/discount-code', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ code: clean }),
+    });
+    const data = await res.json();
+    return data.valid ? { code: data.code, priceDrift: data.priceDrift, priceGymkhana: data.priceGymkhana } : null;
+  };
+
+  const applyCode = async () => {
+    if (!form.discountCode.trim()) return;
+    setCodeStatus('checking');
+    const match = await checkCode(form.discountCode);
+    if (match) {
+      setAppliedCode(match);
+      setCodeStatus('valid');
+    } else {
+      setAppliedCode(null);
+      setCodeStatus('invalid');
+    }
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -35,6 +77,21 @@ export default function RegisterForm({ event }: { event: CurrentEvent }) {
       return;
     }
 
+    let codeToSubmit = appliedCode;
+    const enteredCode = form.discountCode.trim();
+    if (enteredCode && (!appliedCode || appliedCode.code !== enteredCode.toUpperCase())) {
+      setCodeStatus('checking');
+      codeToSubmit = await checkCode(enteredCode);
+      if (!codeToSubmit) {
+        setCodeStatus('invalid');
+        setState('err');
+        setMsg('That discount code is not valid. Remove it or double-check the spelling.');
+        return;
+      }
+      setAppliedCode(codeToSubmit);
+      setCodeStatus('valid');
+    }
+
     setState('loading');
     setMsg('');
 
@@ -42,15 +99,39 @@ export default function RegisterForm({ event }: { event: CurrentEvent }) {
       const res = await fetch('/api/register', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ ...form, eventId: String(event.id) }),
+        body: JSON.stringify({
+          ...form,
+          discountCode: codeToSubmit?.code ?? null,
+          eventId: String(event.id),
+        }),
       });
 
       const data = await res.json();
 
       if (res.ok) {
         setState('ok');
-        setMsg('Registration received! We will send you confirmation and payment details via WhatsApp.');
-        setForm({ name: '', email: '', phone: '', carMake: '', carModel: '', format: '', groupAffiliation: '', wantsTires: false, tireSize: '', tireSizeRear: '', tireQuantity: 4 });
+        const amount = data.registration?.amountDue;
+        setMsg(
+          amount != null
+            ? `Registration received — total ${amount} SAR. We will send confirmation and payment details via WhatsApp.`
+            : 'Registration received! We will send you confirmation and payment details via WhatsApp.'
+        );
+        setForm({
+          name: '',
+          email: '',
+          phone: '',
+          carMake: '',
+          carModel: '',
+          format: '',
+          groupAffiliation: '',
+          discountCode: '',
+          wantsTires: false,
+          tireSizeRear: '',
+          tireSizeFront: '',
+          tireQuantity: 4,
+        });
+        setAppliedCode(null);
+        setCodeStatus('idle');
       } else if (res.status === 409) {
         setState('ok');
         setMsg('You are already registered for this event. Check WhatsApp for details.');
@@ -95,16 +176,31 @@ export default function RegisterForm({ event }: { event: CurrentEvent }) {
                         form.format === 'gymkhana' ? 'text-bone/30' : 'text-white'
                       }`}
                     >
-                      Drift — {event.priceDrift}
+                      Drift — {priceLabel(driftPrice)}
                     </p>
                     <p
                       className={`stencil text-xl font-bold ${
                         form.format === 'drift' ? 'text-bone/30' : 'text-white'
                       }`}
                     >
-                      Gymkhana — {event.priceGymkhana}
+                      Gymkhana — {priceLabel(gymkhanaPrice)}
                     </p>
                   </div>
+                  {form.format && (
+                    <p className="mt-3 border-t border-bone/12 pt-3 text-sm text-acid">
+                      Total for {form.format === 'both' ? 'both' : form.format}:{' '}
+                      {priceLabel(amountForFormat(form.format, driftPrice, gymkhanaPrice))}
+                    </p>
+                  )}
+                  <p className="mt-3 text-xs leading-relaxed text-bone/40">
+                    {appliedCode
+                      ? `Discount code ${appliedCode.code} applied.`
+                      : cutoffLabel
+                        ? isEarly
+                          ? `Early bird pricing — register before ${cutoffLabel} to lock these rates.`
+                          : `Early bird pricing ended ${cutoffLabel} — standard rates apply now.`
+                        : null}
+                  </p>
                 </div>
                 <div>
                   <p className="tag text-ash">AVAILABLE SPOTS</p>
@@ -247,6 +343,37 @@ export default function RegisterForm({ event }: { event: CurrentEvent }) {
               </p>
             </div>
 
+            <div>
+              <label className="tag text-ash" htmlFor="reg-code">
+                08 — DISCOUNT CODE (OPTIONAL)
+              </label>
+              <div className="flex gap-3">
+                <input
+                  id="reg-code"
+                  value={form.discountCode}
+                  onChange={(e) => {
+                    setForm({ ...form, discountCode: e.target.value.toUpperCase() });
+                    setCodeStatus('idle');
+                    setAppliedCode(null);
+                  }}
+                  placeholder="Enter code"
+                  className="field field--dark flex-1"
+                />
+                <button
+                  type="button"
+                  onClick={applyCode}
+                  disabled={!form.discountCode.trim() || codeStatus === 'checking'}
+                  className="border border-bone/20 px-5 py-3 tag font-bold text-bone/70 transition-colors hover:border-white hover:text-white disabled:opacity-40"
+                >
+                  {codeStatus === 'checking' ? '…' : 'APPLY'}
+                </button>
+              </div>
+              {codeStatus === 'valid' && (
+                <p className="mt-2 text-xs text-white">✓ Code applied — discounted price shown on the left.</p>
+              )}
+              {codeStatus === 'invalid' && <p className="mt-2 text-xs text-papaya">Invalid or expired code.</p>}
+            </div>
+
             <div className="border-t border-bone/12 pt-8">
               <label className="flex items-center gap-3 tag text-white">
                 <input
@@ -255,20 +382,20 @@ export default function RegisterForm({ event }: { event: CurrentEvent }) {
                   onChange={(e) => setForm({ ...form, wantsTires: e.target.checked })}
                   className="h-4 w-4"
                 />
-                08 — ADD DRIFT TIRES (OPTIONAL)
+                09 — ADD DRIFT TIRES (OPTIONAL)
               </label>
 
               {form.wantsTires && (
                 <div className="mt-6 space-y-6 border-l-2 border-acid/40 pl-5">
                   <div>
-                    <label className="tag text-ash" htmlFor="reg-tire-size">
-                      TIRE SIZE (FRONT)
+                    <label className="tag text-ash" htmlFor="reg-tire-size-rear">
+                      TIRE SIZE (REAR)
                     </label>
                     <input
-                      id="reg-tire-size"
+                      id="reg-tire-size-rear"
                       required={form.wantsTires}
-                      value={form.tireSize}
-                      onChange={(e) => setForm({ ...form, tireSize: e.target.value })}
+                      value={form.tireSizeRear}
+                      onChange={(e) => setForm({ ...form, tireSizeRear: e.target.value })}
                       placeholder="225/45R17"
                       className="field field--dark"
                     />
@@ -276,13 +403,13 @@ export default function RegisterForm({ event }: { event: CurrentEvent }) {
 
                   <div className="grid gap-6 sm:grid-cols-2">
                     <div>
-                      <label className="tag text-ash" htmlFor="reg-tire-size-rear">
-                        TIRE SIZE (REAR) — IF STAGGERED
+                      <label className="tag text-ash" htmlFor="reg-tire-size-front">
+                        TIRE SIZE (FRONT) — IF STAGGERED
                       </label>
                       <input
-                        id="reg-tire-size-rear"
-                        value={form.tireSizeRear}
-                        onChange={(e) => setForm({ ...form, tireSizeRear: e.target.value })}
+                        id="reg-tire-size-front"
+                        value={form.tireSizeFront}
+                        onChange={(e) => setForm({ ...form, tireSizeFront: e.target.value })}
                         placeholder="Optional, e.g. 235/40R18"
                         className="field field--dark"
                       />

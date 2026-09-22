@@ -7,6 +7,12 @@ function isAuthed(request: NextRequest) {
   return request.cookies.get('dh_admin')?.value === process.env.ADMIN_PASSWORD;
 }
 
+function numOrNull(v: unknown) {
+  if (v === '' || v === null || v === undefined) return null;
+  const n = Number(v);
+  return Number.isFinite(n) ? n : null;
+}
+
 export async function POST(request: NextRequest) {
   if (!isAuthed(request)) {
     return NextResponse.json({ error: 'Not authorized' }, { status: 401 });
@@ -19,8 +25,11 @@ export async function POST(request: NextRequest) {
     eventDate: String(body.eventDate ?? '').trim(),
     countdownAt: body.countdownAt ? new Date(body.countdownAt) : null,
     location: String(body.location ?? '').trim(),
-    priceDrift: String(body.priceDrift ?? '').trim() || 'TBA',
-    priceGymkhana: String(body.priceGymkhana ?? '').trim() || 'TBA',
+    priceDriftEarly: numOrNull(body.priceDriftEarly),
+    priceGymkhanaEarly: numOrNull(body.priceGymkhanaEarly),
+    priceDriftLate: numOrNull(body.priceDriftLate),
+    priceGymkhanaLate: numOrNull(body.priceGymkhanaLate),
+    priceCutoffAt: body.priceCutoffAt ? new Date(body.priceCutoffAt) : null,
     spots: Number.isFinite(Number(body.spots)) ? Number(body.spots) : 0,
     description: String(body.description ?? '').trim(),
     formats: String(body.formats ?? '').trim(),

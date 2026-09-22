@@ -18,10 +18,21 @@ export const registrationsTable = pgTable("registrations_table", {
   eventId: text("event_id").notNull(),
   format: text("format"),
   groupAffiliation: text("group_affiliation"),
+  discountCode: text("discount_code"),
+  amountDue: integer("amount_due"),
   wantsTires: boolean("wants_tires").notNull().default(false),
-  tireSize: text("tire_size"),
   tireSizeRear: text("tire_size_rear"),
+  tireSizeFront: text("tire_size_front"),
   tireQuantity: integer("tire_quantity"),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
+export const discountCodesTable = pgTable("discount_codes_table", {
+  id: serial("id").primaryKey(),
+  code: text("code").notNull().unique(),
+  label: text("label").notNull().default(""),
+  priceDrift: integer("price_drift"),
+  priceGymkhana: integer("price_gymkhana"),
   createdAt: timestamp("created_at").defaultNow().notNull(),
 });
 
@@ -33,8 +44,11 @@ export const eventTable = pgTable("event_table", {
   eventDate: text("event_date").notNull().default(""),
   countdownAt: timestamp("countdown_at"),
   location: text("location").notNull().default(""),
-  priceDrift: text("price_drift").notNull().default("TBA"),
-  priceGymkhana: text("price_gymkhana").notNull().default("TBA"),
+  priceDriftEarly: integer("price_drift_early"),
+  priceGymkhanaEarly: integer("price_gymkhana_early"),
+  priceDriftLate: integer("price_drift_late"),
+  priceGymkhanaLate: integer("price_gymkhana_late"),
+  priceCutoffAt: timestamp("price_cutoff_at"),
   spots: integer("spots").notNull().default(0),
   description: text("description").notNull().default(""),
   formats: text("formats").notNull().default(""),

@@ -18,8 +18,11 @@ export default function AdminEventForm({ event }: { event: CurrentEvent | null }
     eventDate: event?.eventDate ?? '',
     countdownAt: toLocalInputValue(event?.countdownAt),
     location: event?.location ?? '',
-    priceDrift: event?.priceDrift ?? 'TBA',
-    priceGymkhana: event?.priceGymkhana ?? 'TBA',
+    priceDriftEarly: event?.priceDriftEarly ?? '',
+    priceGymkhanaEarly: event?.priceGymkhanaEarly ?? '',
+    priceDriftLate: event?.priceDriftLate ?? '',
+    priceGymkhanaLate: event?.priceGymkhanaLate ?? '',
+    priceCutoffAt: toLocalInputValue(event?.priceCutoffAt),
     spots: event?.spots ?? 0,
     description: event?.description ?? '',
     formats: event?.formats ?? '',
@@ -36,6 +39,7 @@ export default function AdminEventForm({ event }: { event: CurrentEvent | null }
         body: JSON.stringify({
           ...form,
           countdownAt: form.countdownAt ? new Date(form.countdownAt).toISOString() : null,
+          priceCutoffAt: form.priceCutoffAt ? new Date(form.priceCutoffAt).toISOString() : null,
         }),
       });
       setState(res.ok ? 'ok' : 'err');
@@ -99,24 +103,6 @@ export default function AdminEventForm({ event }: { event: CurrentEvent | null }
           />
         </div>
         <div>
-          <label className="tag text-ash">Price — Drift</label>
-          <input
-            value={form.priceDrift}
-            onChange={(e) => setForm({ ...form, priceDrift: e.target.value })}
-            placeholder="TBA, or e.g. 350 SAR"
-            className="field field--dark"
-          />
-        </div>
-        <div>
-          <label className="tag text-ash">Price — Gymkhana</label>
-          <input
-            value={form.priceGymkhana}
-            onChange={(e) => setForm({ ...form, priceGymkhana: e.target.value })}
-            placeholder="TBA, or e.g. 250 SAR"
-            className="field field--dark"
-          />
-        </div>
-        <div>
           <label className="tag text-ash">Available spots</label>
           <input
             type="number"
@@ -134,6 +120,78 @@ export default function AdminEventForm({ event }: { event: CurrentEvent | null }
             placeholder="Drift, Gymkhana, Timed runs"
             className="field field--dark"
           />
+        </div>
+      </div>
+
+      <div className="border-t border-bone/12 pt-6">
+        <p className="tag text-white">Pricing</p>
+        <p className="mt-1 text-xs leading-relaxed text-bone/50">
+          &quot;Both&quot; is calculated automatically as Drift + Gymkhana — no need to set it separately. Leave a
+          field blank to show &quot;TBA&quot; for that price.
+        </p>
+
+        <div className="mt-5 grid gap-6 sm:grid-cols-2">
+          <div>
+            <label className="tag text-ash">Early bird — Drift (SAR)</label>
+            <input
+              type="number"
+              min={0}
+              value={form.priceDriftEarly}
+              onChange={(e) => setForm({ ...form, priceDriftEarly: e.target.value === '' ? '' : Number(e.target.value) })}
+              placeholder="e.g. 850"
+              className="field field--dark"
+            />
+          </div>
+          <div>
+            <label className="tag text-ash">Early bird — Gymkhana (SAR)</label>
+            <input
+              type="number"
+              min={0}
+              value={form.priceGymkhanaEarly}
+              onChange={(e) =>
+                setForm({ ...form, priceGymkhanaEarly: e.target.value === '' ? '' : Number(e.target.value) })
+              }
+              placeholder="e.g. 400"
+              className="field field--dark"
+            />
+          </div>
+          <div>
+            <label className="tag text-ash">Standard — Drift (SAR)</label>
+            <input
+              type="number"
+              min={0}
+              value={form.priceDriftLate}
+              onChange={(e) => setForm({ ...form, priceDriftLate: e.target.value === '' ? '' : Number(e.target.value) })}
+              placeholder="e.g. 1000"
+              className="field field--dark"
+            />
+          </div>
+          <div>
+            <label className="tag text-ash">Standard — Gymkhana (SAR)</label>
+            <input
+              type="number"
+              min={0}
+              value={form.priceGymkhanaLate}
+              onChange={(e) =>
+                setForm({ ...form, priceGymkhanaLate: e.target.value === '' ? '' : Number(e.target.value) })
+              }
+              placeholder="e.g. 450"
+              className="field field--dark"
+            />
+          </div>
+          <div>
+            <label className="tag text-ash">Early bird ends (date + time)</label>
+            <input
+              type="datetime-local"
+              value={form.priceCutoffAt}
+              onChange={(e) => setForm({ ...form, priceCutoffAt: e.target.value })}
+              className="field field--dark"
+            />
+            <p className="mt-1 text-xs text-bone/40">
+              Before this, registrations get the early bird prices. After it, standard prices apply automatically.
+              Leave blank to always show early bird pricing.
+            </p>
+          </div>
         </div>
       </div>
 

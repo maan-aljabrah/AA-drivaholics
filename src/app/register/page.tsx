@@ -1,6 +1,7 @@
 import { Asterisk } from '@/components/ui';
 import RegisterForm from '@/components/RegisterForm';
 import { getCurrentEvent } from '@/db/queries';
+import { isEarlyBird } from '@/lib/pricing';
 
 export const dynamic = 'force-dynamic';
 
@@ -50,7 +51,7 @@ export default async function RegisterPage() {
         <div className="dotgrid pointer-events-none absolute inset-0 opacity-40" />
         <div className="relative mx-auto max-w-[1400px] px-5 py-16 md:px-10 md:py-24">
           {isOpen && event ? (
-            <RegisterForm event={event} />
+            <RegisterForm event={event} isEarly={isEarlyBird(event)} />
           ) : (
             <div className="mx-auto max-w-lg border border-bone/15 bg-carbon-2 p-10 text-center">
               <Asterisk className="mx-auto h-10 w-10 text-white" />
