@@ -56,7 +56,7 @@ export default function Manifesto() {
               b: 'Premium driving experiences that improve skills, build confidence and unite enthusiasts through a shared passion.',
             },
           ].map((c, i) => (
-            <Reveal key={c.n} delay={i * 110} className="group relative bg-carbon p-7 md:p-10">
+            <Reveal key={c.n} delay={i * 110} className="group relative overflow-hidden bg-carbon p-7 md:p-10">
               <div className="absolute inset-0 -translate-y-full bg-acid transition-transform duration-700 ease-[cubic-bezier(.16,1,.3,1)] group-hover:translate-y-0" />
               <div className="relative flex h-full flex-col">
                 <div className="flex items-baseline justify-between">
