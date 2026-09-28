@@ -24,6 +24,7 @@ export const registrationsTable = pgTable("registrations_table", {
   tireSizeRear: text("tire_size_rear"),
   tireSizeFront: text("tire_size_front"),
   tireQuantity: integer("tire_quantity"),
+  wantsDriftTrainer: boolean("wants_drift_trainer").notNull().default(false),
   createdAt: timestamp("created_at").defaultNow().notNull(),
 });
 

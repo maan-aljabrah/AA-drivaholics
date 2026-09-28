@@ -106,6 +106,7 @@ export default async function AdminPage() {
                 <th className="px-5 py-4">Code</th>
                 <th className="px-5 py-4">Amount</th>
                 <th className="px-5 py-4">Tires</th>
+                <th className="px-5 py-4">Trainer</th>
                 <th className="px-5 py-4">Joined</th>
                 <th className="px-5 py-4"></th>
               </tr>
@@ -113,7 +114,7 @@ export default async function AdminPage() {
             <tbody className="divide-y divide-bone/10">
               {registrations.length === 0 ? (
                 <tr>
-                  <td colSpan={12} className="px-5 py-20 text-center">
+                  <td colSpan={13} className="px-5 py-20 text-center">
                     <p className="stencil text-2xl font-bold text-ash">No registrations yet</p>
                   </td>
                 </tr>
@@ -138,6 +139,7 @@ export default async function AdminPage() {
                         ? `${r.tireSizeRear} (R)${r.tireSizeFront ? ` / ${r.tireSizeFront} (F)` : ''} × ${r.tireQuantity}`
                         : '—'}
                     </td>
+                    <td className="px-5 py-4 text-sm text-acid">{r.wantsDriftTrainer ? '✓' : '—'}</td>
                     <td className="px-5 py-4 font-mono text-xs text-ash">
                       {new Date(r.createdAt).toLocaleString('en-GB', {
                         day: '2-digit',

@@ -20,6 +20,7 @@ export async function POST(request: NextRequest) {
       tireSizeRear,
       tireSizeFront,
       tireQuantity,
+      wantsDriftTrainer,
     } = await request.json();
 
     if (!name || !email || !phone || !carMake || !carModel || !eventId) {
@@ -76,6 +77,7 @@ export async function POST(request: NextRequest) {
         tireSizeRear: wantsTires ? String(tireSizeRear).trim() : null,
         tireSizeFront: wantsTires && tireSizeFront ? String(tireSizeFront).trim() : null,
         tireQuantity: wantsTires ? Number(tireQuantity) || 4 : null,
+        wantsDriftTrainer: Boolean(wantsDriftTrainer),
       })
       .onConflictDoNothing()
       .returning();

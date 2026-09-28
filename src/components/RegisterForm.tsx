@@ -21,6 +21,7 @@ export default function RegisterForm({ event, isEarly }: { event: CurrentEvent; 
     tireSizeRear: '',
     tireSizeFront: '',
     tireQuantity: 4,
+    wantsDriftTrainer: false,
   });
   const [state, setState] = useState<'idle' | 'loading' | 'ok' | 'err'>('idle');
   const [msg, setMsg] = useState('');
@@ -129,6 +130,7 @@ export default function RegisterForm({ event, isEarly }: { event: CurrentEvent; 
           tireSizeRear: '',
           tireSizeFront: '',
           tireQuantity: 4,
+          wantsDriftTrainer: false,
         });
         setAppliedCode(null);
         setCodeStatus('idle');
@@ -447,6 +449,18 @@ export default function RegisterForm({ event, isEarly }: { event: CurrentEvent; 
                   </p>
                 </div>
               )}
+            </div>
+
+            <div className="border-t border-bone/12 pt-8">
+              <label className="flex items-center gap-3 tag text-white">
+                <input
+                  type="checkbox"
+                  checked={form.wantsDriftTrainer}
+                  onChange={(e) => setForm({ ...form, wantsDriftTrainer: e.target.checked })}
+                  className="h-4 w-4"
+                />
+                10 — REQUEST A DRIFT TRAINER (OPTIONAL)
+              </label>
             </div>
 
             <div className="border-t border-bone/12 pt-8">
