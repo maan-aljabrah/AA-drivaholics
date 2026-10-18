@@ -203,6 +203,9 @@ export default function RegisterForm({ event, isEarly }: { event: CurrentEvent; 
                           : `Early bird pricing ended ${cutoffLabel} — standard rates apply now.`
                         : null}
                   </p>
+                  <p className="mt-3 border-t border-bone/12 pt-3 text-sm text-bone/70">
+                    Passenger — <span className="font-bold text-white">100 SAR</span> for the whole day.
+                  </p>
                 </div>
                 <div>
                   <p className="tag text-ash">AVAILABLE SPOTS</p>
