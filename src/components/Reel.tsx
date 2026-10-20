@@ -52,7 +52,7 @@ export default function Reel() {
               <span className="text-white">GALLERY</span>
             </h2>
           </div>
-          <p className="max-w-sm text-sm leading-relaxed text-bone/55">
+          <p className="max-w-sm text-base leading-relaxed text-bone/75">
             Every session gets shot, every shot gets shared. Tag <span className="text-acid">#Drivaholics</span> and
             your frame ends up on this wall — or in the season film.
           </p>
@@ -77,13 +77,13 @@ export default function Reel() {
                 loading="lazy"
                 className="h-full w-full object-cover grayscale transition-[filter,transform] duration-[1.2s] group-hover:scale-110 group-hover:grayscale-0"
               />
-              <span className="absolute left-2 top-2 bg-carbon/80 px-2 py-0.5 font-mono text-[9px] uppercase tracking-widest text-acid">
+              <span className="absolute left-2 top-2 bg-carbon/80 px-2 py-0.5 font-mono text-xs uppercase tracking-widest text-acid">
                 {String(i + 1).padStart(2, '0')}
               </span>
               <span className="absolute right-2 top-2 h-2 w-2 rounded-full bg-papaya opacity-0 transition-opacity group-hover:opacity-100" />
             </div>
             <figcaption className="px-1 pb-1 pt-2">
-              <span className="font-mono text-[10px] uppercase tracking-widest text-carbon/60">#{String(i + 1).padStart(2, '0')}</span>
+              <span className="font-mono text-xs uppercase tracking-widest text-carbon/60">#{String(i + 1).padStart(2, '0')}</span>
             </figcaption>
           </figure>
         ))}

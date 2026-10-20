@@ -19,7 +19,7 @@ export default function Partners() {
               BECOME A <span className="outline-type">SPONSOR</span>
             </h2>
           </div>
-          <p className="max-w-sm text-sm leading-relaxed text-bone/55">
+          <p className="max-w-sm text-base leading-relaxed text-bone/75">
             We put brands in front of drivers who care — on the tarmac, in the paddock, and across every recap that
             goes out after. Let&apos;s build something that fits your brand.
           </p>
@@ -28,7 +28,7 @@ export default function Partners() {
         <div className="mt-12 grid gap-px border border-bone/12 bg-bone/12 sm:grid-cols-3">
           {PERKS.map((p) => (
             <div key={p.n} className="group relative overflow-hidden bg-carbon-2 p-7 transition-colors duration-500 hover:bg-carbon-3 md:p-9">
-              <span className="absolute right-4 top-3 font-mono text-[9px] uppercase tracking-[0.2em] text-ash">
+              <span className="absolute right-4 top-3 font-mono text-xs uppercase tracking-[0.2em] text-ash">
                 {p.n}
               </span>
               <p className="stencil text-lg font-bold text-white">{p.label}</p>

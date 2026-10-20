@@ -68,7 +68,7 @@ export default function Manifesto() {
                 <h3 className="stencil mt-8 text-3xl font-extrabold transition-colors duration-500 group-hover:text-carbon md:text-4xl">
                   {c.t}
                 </h3>
-                <p className="mt-4 max-w-sm text-sm leading-relaxed text-bone/60 transition-colors duration-500 group-hover:text-carbon/85">
+                <p className="mt-4 max-w-sm text-base leading-relaxed text-bone/75 transition-colors duration-500 group-hover:text-carbon/85">
                   {c.b}
                 </p>
               </div>

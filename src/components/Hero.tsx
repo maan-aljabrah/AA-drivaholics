@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from 'react';
 import { usePointer } from '@/lib/hooks';
+import { shouldSkipIntro } from '@/lib/intro';
 import { Asterisk, Ticker } from './ui';
 
 const WORD = 'DRIVAHOLICS';
@@ -39,7 +40,7 @@ export default function Hero() {
       );
     fmt();
     const id = setInterval(fmt, 1000);
-    const intro = setTimeout(() => setReady(true), 1550);
+    const intro = setTimeout(() => setReady(true), shouldSkipIntro() ? 0 : 500);
     return () => {
       clearInterval(id);
       clearTimeout(intro);
@@ -163,7 +164,7 @@ export default function Hero() {
         </h1>
 
         <div className="mt-8 flex flex-col gap-8 sm:flex-row sm:items-end sm:justify-between">
-          <p className="max-w-md text-[0.95rem] leading-relaxed text-bone/75">
+          <p className="max-w-md text-base leading-relaxed text-bone/85">
             We bring drivers together to enjoy their cars, improve skills, and be part of{' '}
             <span className="text-white">real car culture</span> — briefed, marshalled, and run properly.
           </p>

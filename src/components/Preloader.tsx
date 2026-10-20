@@ -1,8 +1,9 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import { markIntroSeen, shouldSkipIntro } from '@/lib/intro';
 
-const DURATION = 1500;
+const DURATION = 500;
 
 /** Odometer counter intro that wipes upward into the hero. */
 export default function Preloader() {
@@ -10,6 +11,12 @@ export default function Preloader() {
   const [gone, setGone] = useState(false);
 
   useEffect(() => {
+    if (shouldSkipIntro()) {
+      // sessionStorage and matchMedia only exist client-side; reading them pre-mount would mismatch SSR output.
+      // eslint-disable-next-line react-hooks/set-state-in-effect
+      setGone(true);
+      return;
+    }
     const start = performance.now();
     let frame = 0;
     const tick = (now: number) => {
@@ -20,11 +27,12 @@ export default function Preloader() {
     frame = requestAnimationFrame(tick);
     const lock = setTimeout(() => {
       document.documentElement.classList.add('locked');
-    }, 250);
+    }, 100);
     const done = setTimeout(() => {
       document.documentElement.classList.remove('locked');
+      markIntroSeen();
       setGone(true);
-    }, DURATION + 800);
+    }, DURATION + 500);
     return () => {
       cancelAnimationFrame(frame);
       clearTimeout(lock);
@@ -37,7 +45,7 @@ export default function Preloader() {
   return (
     <div
       className="fixed inset-0 z-[90] flex flex-col justify-between bg-carbon px-5 py-6 md:px-10 md:py-8"
-      style={{ animation: `preloader-out .8s cubic-bezier(.85,0,.15,1) ${DURATION}ms forwards` }}
+      style={{ animation: `preloader-out .5s cubic-bezier(.85,0,.15,1) ${DURATION}ms forwards` }}
       aria-hidden
     >
       <div className="flex items-start justify-between tag text-ash">

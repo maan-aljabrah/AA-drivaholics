@@ -54,7 +54,7 @@ export default function Join() {
             THE LIST?
           </h2>
 
-          <p className="mt-8 max-w-md text-[0.95rem] font-medium leading-relaxed text-carbon/70">
+          <p className="mt-8 max-w-md text-base font-medium leading-relaxed text-carbon/85">
             Get notified when the next event opens. We will send you the details, pricing, and registration link —
             no spam, no resale group, just the call-out.
           </p>

@@ -46,7 +46,7 @@ export default function Numbers() {
               WHO <span className="outline-type">ARE WE</span>
             </h2>
           </div>
-          <p className="max-w-sm text-sm leading-relaxed text-bone/55">
+          <p className="max-w-sm text-base leading-relaxed text-bone/75">
             Founded in 2024 in Khobar, Saudi Arabia. We run one big drift event yearly, plus smaller sessions
             across Saudi Arabia and Bahrain — full smoke, full send, everybody home safe.
           </p>
@@ -55,7 +55,7 @@ export default function Numbers() {
         <div className="mt-12 grid gap-px border border-bone/12 bg-bone/12 sm:grid-cols-3">
           {STATS.map((s, i) => (
             <div key={s.label} className="group relative overflow-hidden bg-carbon p-7 transition-colors duration-500 hover:bg-carbon-3 md:p-9">
-              <span className="absolute right-4 top-3 font-mono text-[9px] uppercase tracking-[0.2em] text-ash">
+              <span className="absolute right-4 top-3 font-mono text-xs uppercase tracking-[0.2em] text-ash">
                 0{i + 1}
               </span>
               <StatValue stat={s} />

@@ -51,7 +51,7 @@ export default function Tiers() {
         <div className="md:col-span-7">
           <div className="border border-bone/15 bg-carbon p-8 md:p-12">
             <h3 className="stencil text-3xl font-bold md:text-4xl">How to join</h3>
-            <p className="mt-6 max-w-2xl text-[0.95rem] leading-relaxed text-bone/70">
+            <p className="mt-6 max-w-2xl text-base leading-relaxed text-bone/80">
               Drivaholics runs <span className="text-white">signup-per-event</span> — no memberships, no tiers. Each
               event has its own registration, pricing, and details. Follow us on{' '}
               <a

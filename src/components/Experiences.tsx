@@ -79,7 +79,7 @@ export default function Experiences() {
             </Reveal>
           </div>
           <Reveal className="max-w-xs">
-            <p className="text-sm leading-relaxed text-bone/60">
+            <p className="text-base leading-relaxed text-bone/75">
               Drag the rail or use your trackpad. Every event is briefed and marshalled — run properly, and
               everybody gets home safe.
             </p>
@@ -120,7 +120,7 @@ export default function Experiences() {
               </span>
               <div className="absolute bottom-3 right-3 flex gap-1.5">
                 {it.meta.map((m) => (
-                  <span key={m} className="border border-bone/25 bg-carbon/70 px-2 py-1 font-mono text-[9px] uppercase tracking-widest text-bone/80 backdrop-blur-sm">
+                  <span key={m} className="border border-bone/25 bg-carbon/70 px-2 py-1 font-mono text-xs uppercase tracking-widest text-bone/80 backdrop-blur-sm">
                     {m}
                   </span>
                 ))}
@@ -132,7 +132,7 @@ export default function Experiences() {
               <h3 className="stencil mt-3 text-4xl font-extrabold transition-transform duration-500 group-hover:translate-x-2 md:text-5xl">
                 {it.title}
               </h3>
-              <p className="mt-4 min-h-[3.5rem] text-sm leading-relaxed text-bone/55">{it.body}</p>
+              <p className="mt-4 min-h-[3.5rem] text-base leading-relaxed text-bone/75">{it.body}</p>
               <a
                 href="#join"
                 data-cursor="JOIN"
